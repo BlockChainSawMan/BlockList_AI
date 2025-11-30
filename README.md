@@ -3,8 +3,6 @@ Blocklist : 온체인 기반 스테이블 코인 거래 AML 서비스
 
 ## 🧑‍💻 개발 환경 및 기술 스택
 
-### AI & Data Analysis
-
 [Python] [PyTorch] [PyTorch Geometric] [Pandas] [NumPy]
 
 
@@ -36,6 +34,10 @@ Blocklist : 온체인 기반 스테이블 코인 거래 AML 서비스
 ```
 
 
-# GNN-Based Anomaly Detection: Final Methodology & Evolution
+## 📂 AI Part
+
+### 1. GNN-Based Anomaly Detection: Final Methodology & Evolution
 
 ![unnamed](https://github.com/user-attachments/assets/637c5f5d-c08f-44a8-98cb-000ce5b2f891)
+
+### 2. RAG
