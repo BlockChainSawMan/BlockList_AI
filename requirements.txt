@@ -1,0 +1,24 @@
+# 🚀 CORE SERVER
+fastapi
+uvicorn
+pydantic
+neo4j
+
+# 🧠 AI/ML LIBRARIES (CPU version must be guaranteed)
+# 1. torch를 CPU 버전으로 정확히 명시 (Railway 환경 Python 버전 확인 후 URL 수정 필요)
+# 현재 로그에서 Python 버전(cp310)에 맞는 URL 사용을 권장
+torch==2.9.1+cpu
+
+torch_geometric
+
+# 💡 AUXILIARY LIBRARIES
+langchain
+langchain_openai
+
+# 🛠️ UTILITIES & DATA
+numpy
+pandas
+matplotlib
+networkx
+gdown
+python-dotenv  # 'dotenv' 대신 'python-dotenv'로 변경하는 것이 일반적
