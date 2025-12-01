@@ -3,13 +3,27 @@ Blocklist : 온체인 기반 스테이블 코인 거래 AML 서비스
 
 ## 🧑‍💻 개발 환경 및 기술 스택
 
-[Python] [PyTorch] [PyTorch Geometric] [Pandas] [NumPy]
+> **Language**
+
+<img src="https://img.shields.io/badge/Python-3776AB?style=flat-square&logo=python&logoColor=white"> <img src="https://img.shields.io/badge/Cypher-008CC1?style=flat-square&logo=neo4j&logoColor=white">
+
+> **Tool**
+
+<img src="https://img.shields.io/badge/Visual_Studio_Code-0078D4?style=flat-square&logo=visual-studio-code&logoColor=white"> <img src="https://img.shields.io/badge/Jupyter_Notebook-F37626?style=flat-square&logo=jupyter&logoColor=white">
+
+> **Stack**
+
+<img src="https://img.shields.io/badge/PyTorch-EE4C2C?style=flat-square&logo=pytorch&logoColor=white"> <img src="https://img.shields.io/badge/PyTorch%20Geometric-3793EF?style=flat-square&logo=pyg&logoColor=white"> <img src="https://img.shields.io/badge/LangChain-1A73E8?style=flat-square&logo=chainlink&logoColor=white"> <img src="https://img.shields.io/badge/Pandas-150458?style=flat-square&logo=pandas&logoColor=white"> <img src="https://img.shields.io/badge/NumPy-013243?style=flat-square&logo=numpy&logoColor=white">
+
+> **Database**
+
+<img src="https://img.shields.io/badge/Neo4j-008CC1?style=flat-square&logo=neo4j&logoColor=white">
 
 
 
 ## 🚧 설계
 
-### 시스템 아키텍처
+### 📉 시스템 아키텍처
 
 [AI 모델 학습 및 서빙 파이프라인을 포함한 시스템 아키텍처 다이어그램 이미지를 삽입예정 : 데이터 전처리 -\> GNN 모델 학습 -\> 모델 저장 -\> FastAPI를 통한 모델 서빙 및 OpenAI API 연동]
 
