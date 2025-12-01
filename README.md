@@ -54,10 +54,11 @@ Blocklist : 온체인 기반 스테이블 코인 거래 AML 서비스
 
 [Elliptic Dataset](https://www.kaggle.com/datasets/ellipticco/elliptic-data-set)
 
-Elliptic 데이터셋은 비트코인 거래 데이터를 포함하고 합법 및 불법 엔티티(사기, 멀웨어, 테러 조직, 랜섬웨어, 폰지 사기 등)가 매핑되어 있습니다. 노드와 엣지 데이터셋으로 분류되어 있어 Neo4j 지식그래프 구축에 적합한 형태이며, 본 프로젝트에서는 해당 비트코인 거래 데이터셋을 스테이블 코인 거래 데이터셋으로 가정 후 진행하였습니다.
+Elliptic 데이터셋은 비트코인 거래 데이터를 포함하고 elliptic_txs_features.csv, elliptic_txs_classes.csv, elliptic_txs_edgelist.csv 파일로 구성되어 있습니다. 노드와 엣지 기반으로 분류되어 있어 Neo4j 지식그래프 구축에 적합한 형태이며, 본 프로젝트에서는 해당 비트코인 거래 데이터셋을 스테이블 코인 거래 데이터셋으로 가정 후 진행하였습니다.
+
 
 ### 1. GNN-Based Anomaly Detection: Final Methodology & Evolution
 
 ![unnamed](https://github.com/user-attachments/assets/637c5f5d-c08f-44a8-98cb-000ce5b2f891)
 
-### 2. RAG
+### 2. 
