@@ -62,3 +62,6 @@ Elliptic 데이터셋은 비트코인 거래 데이터를 포함하고 elliptic_
 ![unnamed](https://github.com/user-attachments/assets/637c5f5d-c08f-44a8-98cb-000ce5b2f891)
 
 ### 2. 
+
+<img width="2816" height="1504" alt="Gemini_Generated_Image_nyhirknyhirknyhi" src="https://github.com/user-attachments/assets/169efb7d-3fc6-49f8-aed0-a940aa887230" />
+
