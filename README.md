@@ -73,5 +73,14 @@ Elliptic 데이터셋은 비트코인 거래 데이터를 포함하고 elliptic_
 
 마지막으로 조회 로직 구축 단계에서는 특정 지갑 주소를 입력받아 연관된 거래 증거를 추출하는 파이프라인을 완성하였습니다. 사용자가 단일 또는 다수의 지갑 주소를 입력하면, 시스템은 자동으로 Cypher 쿼리를 생성하여 해당 지갑과 1촌 관계에 있는 노드 및 엣지 정보를 서브그래프(Evidence Graph) 형태로 조회합니다. 이 결과는 최종적으로 JSON 형식으로 출력되어, LLM이 답변을 생성하는데 구체적인 증거 데이터로 활용될 수 있도록 구현되었습니다.
 
-### 3. Neo4j Knowledge Graph Construction & Evidence Retrieval Pipeline
+### 3. LangChain-based LLM Analysis & Automated AML Reporting Pipeline
 
+<img width="2848" height="1504" alt="Gemini_Generated_Image_6wtou96wtou96wto" src="https://github.com/user-attachments/assets/e18d1dca-2579-4623-9105-483cb643950d" />
+
+이 단계는 랭체인이 앞서 구축된 GNN GAT 모델의 결과값과 Neo4j 조회 파이프라인에서 출력된 1촌 서브그래프를 참조해 RAG 기반 검색으로 LLM 자연어 답변 생성을 구현합니다.
+
+이 단계에서는 랭체인 프레임워크와 GPT-4o 모델을 활용합니다. 시스템을 '블록체인 AML 분석 전문가' 페르소나로 설정하고, 앞서 전달받은 서브그래프(Evidence Graph)와 위험 점수(risk score)를 프롬프트에 주입합니다. 이때, Pydantic 파서를 적용하여 LLM의 답변이 단순 텍스트가 아닌 '상세 설명', '요약(20자 이하)', '핵심 불렛 포인트(3개)'의 정해진 JSON 규격을 엄격히 따르도록 제어합니다.
+
+마지막으로 전체 파이프라인 통합 단계에서는 run_pipeline 함수를 통해 이 모든 과정을 하나로 묶습니다. [GNN, PGExplainer 탐지 → Neo4j 조회 → LLM 분석]의 흐름이 한 번의 실행으로 이루어지며, 최종적으로 사용자는 시각화 가능한 그래프 데이터와 함께, 해당 거래가 왜 위험한지 설명하는 자연어 설명을 동시에 받아볼 수 있게 됩니다.
+
+### 4. Railway API
