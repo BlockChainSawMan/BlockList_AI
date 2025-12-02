@@ -24,7 +24,7 @@ Blocklist : 온체인 기반 스테이블 코인 거래 AML 서비스
 
 ### 📉 시스템 아키텍처
 
-<img width="919" height="1024" alt="image" src="https://github.com/user-attachments/assets/3587d3b2-c8b9-4b27-9a94-f0f022b59faf" />
+<img width="919" height="1024" alt="image" src="https://github.com/user-attachments/assets/1f88b051-79c4-4a03-9dad-f95aa797b723" />
 
 ### 📂 AI Part Directory
 
