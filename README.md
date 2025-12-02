@@ -31,14 +31,19 @@ Blocklist : 온체인 기반 스테이블 코인 거래 AML 서비스
 
 ```bash
 .
-├── data                  # AI 모델 학습 및 분석을 위한 데이터 디렉토리
+├── data                  # AI 모델학습을 위한 데이터 셋
 │   ├── df_merged.csv     # 병합된 노드 데이터셋 (unknown 라벨 포함)
 │   ├── elliptic_data_v2.pt # PyTorch Geometric용 전체 그래프 데이터 객체 파일
 │   └── elliptic_node_final.csv # 최종 전처리된 노드 피처 데이터셋
+│
+├── model_train           # AI 모델학습 과정
+│   └── train_gnn+pge_explainer.ipynb # GNN GAT + Explainer 모델 학습 파일
+│
 ├── models                # 학습된 모델 저장소
 │   └── saved
 │       ├── elliptic_gat_best.pt # 최적의 성능을 낸 GNN GAT 학습 모델 파일
-│       ├── explainer_pg.pt      # GNN 예측 결과 해석을 위한 Explainer 모델 파일
+│       └── explainer_pg.pt      # GNN 예측 결과 해석을 위한 Explainer 모델 파일
+│
 ├── .env                  # 환경 변수 설정 파일 (Neo4j 접속 정보, OpenAI API Key 등)
 ├── .gitignore            # Git 버전 관리 제외 파일 목록
 ├── api_server.py         # FastAPI 기반 AI 모델 서빙 서버 코드
@@ -59,7 +64,6 @@ Blocklist : 온체인 기반 스테이블 코인 거래 AML 서비스
 Elliptic 데이터셋은 비트코인 거래 데이터를 포함하고 `elliptic_txs_features.csv`, `elliptic_txs_classes.csv`, `elliptic_txs_edgelist.csv` 3개의 파일로 구성되어 있습니다. 노드와 엣지 기반으로 분류되어 있어 Neo4j 지식그래프 구축에 적합한 형태입니다.
 
 ① 거래 관계도 (elliptic_txs_edgelist.csv) 
-- 행: 203,769개 트랜잭션 (노드) 열: 167개
 - 행: 203,769개 열: 2개
 - 거래 관계 즉, 자금 이동 경로를 나타내는 데이터
 -  A지갑에서 B지갑으로 코인이 이동했다면, 이는 '거래(Transaction)'라는 노드 간의 연결로 표현됨
@@ -70,8 +74,8 @@ Elliptic 데이터셋은 비트코인 거래 데이터를 포함하고 `elliptic
 
 ② 거래 속성 정보 (elliptic_txs_features.csv) 
 - 행: 203,769개 트랜잭션 (노드) 열: 167개
-- 각 거래(노드)가 가지는 166차원의 고유한 특징 벡터
-- 해당 데이터셋에서는 features의 특징이 익명화되어 있음
+- 각 거래(노드)가 가지는 166차원의 고유한 특징 벡터로 해당 거래 자체의 특성(Local Features)와 이를 기반으로 한 집계 정보(Aggregated Features)로 이루어짐
+- 해당 데이터셋에서는 개인정보보안을 위해 features의 특징이 익명화되어 있음
 
 ```
 1. Local Features (93개)
@@ -82,7 +86,7 @@ Elliptic 데이터셋은 비트코인 거래 데이터를 포함하고 `elliptic
 - (예: 이웃 거래들의 평균 거래량, 이웃의 이웃이 가진 표준편차 등)
 ```
 ③ 정답 레이블 (elliptic_txs_classes.csv) 
-- 행: 234,355개 엣지 열: 2개
+- 행: 203,769개 열: 2개
 - 거래 정상(0)/비정상(1)/미분류(-1)를 나타내는 데이터, 불균형 데이터의 특징
 - 데이터 분포
   - 불법 (illicit) - 약 4,545개 (2%)
@@ -94,12 +98,14 @@ Elliptic 데이터셋은 비트코인 거래 데이터를 포함하고 `elliptic
 - Unknown: 아직 분류되지 않은 거래 (전체의 약 98% 차지, 준지도 학습 활용 가능)
 ```
 
-### 1. GNN-Based Anomaly Detection: Final Methodology & Evolution
+### 1. GNN-Based Anomaly Detection : Final Methodology & Evolution
 
 ![unnamed](https://github.com/user-attachments/assets/637c5f5d-c08f-44a8-98cb-000ce5b2f891)
 
-초기 GAT 모델 도입 시 데이터 정규화 부재와 클래스 불균형으로 인한 Gradient Explosion(NaN 발생) 및 낮은 F1-Score(0.04) 문제에 직면했습니다. 이후 GCN 변경과 Weighted Loss, BatchNorm 등을 도입하여 학습 안정성과 Recall을 개선했으나, 모델이 그래프 구조(Edge)보다 노드 자체 피처에 과도하게 의존하여 단순 지도학습과 다를 바 없는 결과(정확도 0.9799)를 보였다. 이에 EdgeForcedGATNet을 최종 고안하여 Input Feature와 Edge에 과감한 Dropout을 적용, 노드 피처 의존도를 낮추고 이웃 정보 학습을 강제했다. 결과적으로 단순 정확도는 조정되었으나(0.8878), 엣지 정보 활용이 검증된 견고한 그래프 학습 모델을 구축할 수 있었습니다.
+GNN모델 학습 단계에서는 GAT 모델 도입 초기에 데이터 정규화 부재와 클래스 불균형으로 인한 Gradient Explosion(NaN 발생) 및 낮은 F1-Score(0.04) 문제에 직면했습니다. 이후 GCN 변경과 Weighted Loss, BatchNorm 등을 도입하여 학습 안정성과 Recall을 개선했으나, 모델이 그래프 구조(Edge)보다 노드 자체 피처에 과도하게 의존하여 단순 지도학습과 다를 바 없는 결과(정확도 0.9799)를 보였습니다. 이에 EdgeForcedGATNet을 최종 고안하여 Input Feature와 Edge에 과감한 Dropout을 적용하여 노드 피처 의존도를 낮추고 이웃 정보 학습을 강제했습니다. 결과적으로 단순 정확도는 조정되었으나(0.8878), 엣지 정보 활용이 검증된 견고한 그래프 학습 모델을 구축할 수 있었습니다.
 
+XAI 모델의 'Feature Dominance' 문제와 해결과정은 다음과 같습니다. 학습된 모델을 설명하기 위해 초기엔 GNN모델의 거래 관계의 중요한 Node정보를 중요도 순으로 출력하는 GNNExplainer를 학습시켰으나, 초기에는 GNNExplainer를 사용했으나, 실시간 금융 사기 탐지 시스템의 특성상 Low Latency(낮은 지연시간)가 필수적이라 판단하여 Inductive 방식의 PGExplainer로 고도화하였습니다. 이를 통해 설명 생성 시간을 수 초(sec) 단위에서 0.0X초(ms) 단위로 단축했습니다.
+PGExplainer는 학습 과정에서 모든 엣지의 중요도(Mask)가 0.0000으로 수렴하는 현상 발생하여, Learning Rate를 0.003 → 0.0005 수준으로 낮춰 안정적을 확보하고, 규제 계수를 완화하여 로그 연산의 영향력을 줄였습니다. 마지막으로 데이터 셋에서 최다수를 차지하는 미분류 거래의 영향력으로 NaN값 전파되는 현상을 방지하기 위해 NaN 발생 시 해당 배치는 무시하여 Loop 내에서 total_loss가 오염되지 않도록 학습했습니다.
 
 
 ### 2. Neo4j Knowledge Graph Construction & Evidence Retrieval Pipeline
