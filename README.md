@@ -1,4 +1,4 @@
-# Blockchainsawman_Blocklist
+<img width="2848" height="1504" alt="gnnmodel_info" src="https://github.com/user-attachments/assets/fff5b94d-4914-47ea-a939-980255439a8e" /># Blockchainsawman_Blocklist
 Blocklist : 온체인 기반 스테이블 코인 거래 AML 서비스
 
 ## 🧑‍💻 개발 환경 및 기술 스택
@@ -100,7 +100,9 @@ Elliptic 데이터셋은 비트코인 거래 데이터를 포함하고 `elliptic
 
 ### 1. GNN-Based Anomaly Detection : Final Methodology & Evolution
 
-![unnamed](https://github.com/user-attachments/assets/637c5f5d-c08f-44a8-98cb-000ce5b2f891)
+
+<img width="2848" height="1504" alt="gnnmodel_info" src="https://github.com/user-attachments/assets/6c5610e2-f5b1-471c-bb51-affce8ddcf3e" />
+
 
 GNN모델 학습 단계에서는 GAT 모델 도입 초기에 데이터 정규화 부재와 클래스 불균형으로 인한 Gradient Explosion(NaN 발생) 및 낮은 F1-Score(0.04) 문제에 직면했습니다. 이후 GCN 변경과 Weighted Loss, BatchNorm 등을 도입하여 학습 안정성과 Recall을 개선했으나, 모델이 그래프 구조(Edge)보다 노드 자체 피처에 과도하게 의존하여 단순 지도학습과 다를 바 없는 결과(정확도 0.9799)를 보였습니다. 이에 EdgeForcedGATNet을 최종 고안하여 Input Feature와 Edge에 과감한 Dropout을 적용하여 노드 피처 의존도를 낮추고 이웃 정보 학습을 강제했습니다. 결과적으로 단순 정확도는 조정되었으나(0.8878), 엣지 정보 활용이 검증된 견고한 그래프 학습 모델을 구축할 수 있었습니다.
 
