@@ -1,4 +1,3 @@
-<img width="2848" height="1504" alt="gnnmodel_info" src="https://github.com/user-attachments/assets/fff5b94d-4914-47ea-a939-980255439a8e" /># Blockchainsawman_Blocklist
 Blocklist : 온체인 기반 스테이블 코인 거래 AML 서비스
 
 ## 🧑‍💻 개발 환경 및 기술 스택
