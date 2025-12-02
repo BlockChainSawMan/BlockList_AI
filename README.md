@@ -24,7 +24,7 @@ Blocklist : 온체인 기반 스테이블 코인 거래 AML 서비스
 
 ### 📉 시스템 아키텍처
 
-[AI 모델 학습 및 서빙 파이프라인을 포함한 시스템 아키텍처 다이어그램 이미지를 삽입예정 : 데이터 전처리 -\> GNN 모델 학습 -\> 모델 저장 -\> FastAPI를 통한 모델 서빙 및 OpenAI API 연동]
+<img width="919" height="1024" alt="image" src="https://github.com/user-attachments/assets/3587d3b2-c8b9-4b27-9a94-f0f022b59faf" />
 
 ### 📂 AI Part Directory
 
