@@ -106,6 +106,11 @@ GNN모델 학습 단계에서는 GAT 모델 도입 초기에 데이터 정규화
 
 XAI 모델의 'Feature Dominance' 문제와 해결과정은 다음과 같습니다. 학습된 모델을 설명하기 위해 초기엔 GNN모델의 거래 관계의 중요한 Node정보를 중요도 순으로 출력하는 GNNExplainer를 학습시켰으나, 실시간 금융 사기 탐지 시스템의 특성상 Low Latency(낮은지연시간)가 필수적이라 판단하여 Inductive 방식의 PGExplainer로 고도화하였습니다. 이를 통해 설명 생성 시간을 수 초(sec) 단위에서 0.0X초(ms) 단위로 단축했습니다. PGExplainer 학습 과정에서 모든 엣지의 중요도(Mask)가 0.0000으로 수렴하는 현상 발생을 해결하기 위해 Learning Rate를 0.003에서서 0.0005 수준으로 낮춰 안정성을 확보하고, 규제 계수를 완화하여 로그 연산의 영향력을 줄여 개선하였습니다. 마지막으로 데이터 셋에서 최다수를 차지하는 미분류 거래의 영향력으로 NaN값 전파되는 현상을 방지하기 위해 NaN 발생 시 해당 배치는 무시하여 Loop 내에서 total_loss가 오염되지 않도록 학습했습니다.
 
+[학습 환경]
+- **GPU** : NVIDIA A100-SXM4-40GB(Google Colab 환경)
+- **Framework** : PyTorch 2.9.0, PyTorch Geometric
+- **데이터 분할** : Train 60% / Val 20% / Test 20%
+
 
 ### 2. Neo4j Knowledge Graph Construction & Evidence Retrieval Pipeline
 
