@@ -54,18 +54,56 @@ Blocklist : 온체인 기반 스테이블 코인 거래 AML 서비스
 
 [Elliptic Dataset](https://www.kaggle.com/datasets/ellipticco/elliptic-data-set)
 
-Elliptic 데이터셋은 비트코인 거래 데이터를 포함하고 elliptic_txs_features.csv, elliptic_txs_classes.csv, elliptic_txs_edgelist.csv 파일로 구성되어 있습니다. 노드와 엣지 기반으로 분류되어 있어 Neo4j 지식그래프 구축에 적합한 형태이며, 본 프로젝트에서는 해당 비트코인 거래 데이터셋을 스테이블 코인 거래 데이터셋으로 가정 후 진행하였습니다.
+<img width="1600" height="1067" alt="Code_Generated_Image" src="https://github.com/user-attachments/assets/e3d85678-acdc-4aa5-b645-9f05abaceab5" />
 
-AI가 학습한 데이터에 대한 설명 또는 예시 더 추가 작성해야될듯
+Elliptic 데이터셋은 비트코인 거래 데이터를 포함하고 `elliptic_txs_features.csv`, `elliptic_txs_classes.csv`, `elliptic_txs_edgelist.csv` 3개의 파일로 구성되어 있습니다. 노드와 엣지 기반으로 분류되어 있어 Neo4j 지식그래프 구축에 적합한 형태입니다.
 
+① 거래 관계도 (elliptic_txs_edgelist.csv) 
+- 거래 관계 즉, 자금 이동 경로를 나타내는 데이터
+-  A지갑에서 B지갑으로 코인이 이동했다면, 이는 '거래(Transaction)'라는 노드 간의 연결로 표현됨
+
+ | txId1 (출발 노드) | txId2 (도착 노드) | 
+ | :--- | :--- | 
+ | 230425980 | 5530458 | 
+
+② 거래 속성 정보 (elliptic_txs_features.csv) 
+- 각 거래(노드)가 가지는 166차원의 고유한 특징 벡터
+- 해당 데이터셋에서는 features의 특징이 익명화되어 있음
+
+```
+1. Local Features (93개)
+- 해당 거래 자체의 정보
+- (예: 타임스탬프 외 수수료, 입/출금 횟수, 거래량 등 정보 익명화 )
+2. Aggregated Features (73개)
+- 해당 거래와 연결된 이웃 노드들의 거래 기반 통계 정보
+- (예: 이웃 거래들의 평균 거래량, 이웃의 이웃이 가진 표준편차 등)
+```
+③ 정답 레이블 (elliptic_txs_classes.csv) 
+- 거래 정상(0)/비정상(1)/미분류(-1)를 나타내는 데이터, 불균형 데이터의 특징
+- 데이터 분포
+  - 불법 (illicit) - 약 4,545개 (2%)
+  - 합법 (licit) - 약 42,019개 (21%)
+  - unknown = 미분류 - 약 157,205개 (77%)
+```
+- 0 (Licit): 거래소, 지갑 서비스 등 합법적 거래 (정상)
+- 1 (Illicit): 다크웹, 랜섬웨어, 자금세탁 등 불법 거래 (비정상)
+- Unknown: 아직 분류되지 않은 거래 (전체의 약 98% 차지, 준지도 학습 활용 가능)
+```
 
 ### 1. GNN-Based Anomaly Detection: Final Methodology & Evolution
 
 ![unnamed](https://github.com/user-attachments/assets/637c5f5d-c08f-44a8-98cb-000ce5b2f891)
 
+초기 GAT 모델 도입 시 데이터 정규화 부재와 클래스 불균형으로 인한 Gradient Explosion(NaN 발생) 및 낮은 F1-Score(0.04) 문제에 직면했습니다. 이후 GCN 변경과 Weighted Loss, BatchNorm 등을 도입하여 학습 안정성과 Recall을 개선했으나, 모델이 그래프 구조(Edge)보다 노드 자체 피처에 과도하게 의존하여 단순 지도학습과 다를 바 없는 결과(정확도 0.9799)를 보였다. 이에 EdgeForcedGATNet을 최종 고안하여 Input Feature와 Edge에 과감한 Dropout을 적용, 노드 피처 의존도를 낮추고 이웃 정보 학습을 강제했다. 결과적으로 단순 정확도는 조정되었으나(0.8878), 엣지 정보 활용이 검증된 견고한 그래프 학습 모델을 구축할 수 있었습니다.
+
+
+
 ### 2. Neo4j Knowledge Graph Construction & Evidence Retrieval Pipeline
 
 <img width="2816" height="1504" alt="Gemini_Generated_Image_nyhirknyhirknyhi" src="https://github.com/user-attachments/assets/169efb7d-3fc6-49f8-aed0-a940aa887230" />
+
+GNN 모델&PGExplainer를 통해 특정 거래패턴의 비정상적인 움직임을 주변 노드정보를 기반으로 전달받은 후, Neo4j 지식그래프를 구축하여 AI는 다음과 같은 추론이 가능합니다.
+- `ID 99201 거래는 자체 속성(금액, 시간)은 정상이지만, 2단계 건너편(2-hop)에 있는 노드들이 최근 불법 자금(Class 1)과 다수 연결되어 있으므로, 이 거래 또한 '자금 세탁의 중간 경로'일 확률이 85%이다`
 
 데이터 전처리 단계에서는 Elliptic 데이터셋의 피처(feature)와 클래스(class) 파일을 병합하고, 분석에 불필요한 'unknown' 클래스 데이터를 제거하여 정확도를 높였습니다. 또한, 지식 그래프 내에서 엣지(Edge)의 속성을 풍부하게 만들기 위해, 기존 엣지 리스트에 존재하지 않던 '거래 금액(amount)'과 '시간(time)' 정보를 랜덤으로 생성하여 추가함으로써, 최종적으로 약 4만 6천 개의 노드와 3만 6천 개의 엣지로 구성된 정제된 데이터셋을 마련하였습니다.
 
