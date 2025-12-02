@@ -104,8 +104,7 @@ Elliptic 데이터셋은 비트코인 거래 데이터를 포함하고 `elliptic
 
 GNN모델 학습 단계에서는 GAT 모델 도입 초기에 데이터 정규화 부재와 클래스 불균형으로 인한 Gradient Explosion(NaN 발생) 및 낮은 F1-Score(0.04) 문제에 직면했습니다. 이후 GCN 변경과 Weighted Loss, BatchNorm 등을 도입하여 학습 안정성과 Recall을 개선했으나, 모델이 그래프 구조(Edge)보다 노드 자체 피처에 과도하게 의존하여 단순 지도학습과 다를 바 없는 결과(정확도 0.9799)를 보였습니다. 이에 EdgeForcedGATNet을 최종 고안하여 Input Feature와 Edge에 과감한 Dropout을 적용하여 노드 피처 의존도를 낮추고 이웃 정보 학습을 강제했습니다. 결과적으로 단순 정확도는 조정되었으나(0.8878), 엣지 정보 활용이 검증된 견고한 그래프 학습 모델을 구축할 수 있었습니다.
 
-XAI 모델의 'Feature Dominance' 문제와 해결과정은 다음과 같습니다. 학습된 모델을 설명하기 위해 초기엔 GNN모델의 거래 관계의 중요한 Node정보를 중요도 순으로 출력하는 GNNExplainer를 학습시켰으나, 실시간 금융 사기 탐지 시스템의 특성상 Low Latency(낮은 지연시간)가 필수적이라 판단하여 Inductive 방식의 PGExplainer로 고도화하였습니다. 이를 통해 설명 생성 시간을 수 초(sec) 단위에서 0.0X초(ms) 단위로 단축했습니다.
-PGExplainer는 학습 과정에서 모든 엣지의 중요도(Mask)가 0.0000으로 수렴하는 현상 발생하여, Learning Rate를 0.003 → 0.0005 수준으로 낮춰 안정적을 확보하고, 규제 계수를 완화하여 로그 연산의 영향력을 줄였습니다. 마지막으로 데이터 셋에서 최다수를 차지하는 미분류 거래의 영향력으로 NaN값 전파되는 현상을 방지하기 위해 NaN 발생 시 해당 배치는 무시하여 Loop 내에서 total_loss가 오염되지 않도록 학습했습니다.
+XAI 모델의 'Feature Dominance' 문제와 해결과정은 다음과 같습니다. 학습된 모델을 설명하기 위해 초기엔 GNN모델의 거래 관계의 중요한 Node정보를 중요도 순으로 출력하는 GNNExplainer를 학습시켰으나, 실시간 금융 사기 탐지 시스템의 특성상 Low Latency(낮은지연시간)가 필수적이라 판단하여 Inductive 방식의 PGExplainer로 고도화하였습니다. 이를 통해 설명 생성 시간을 수 초(sec) 단위에서 0.0X초(ms) 단위로 단축했습니다. PGExplainer 학습 과정에서 모든 엣지의 중요도(Mask)가 0.0000으로 수렴하는 현상 발생을 해결하기 위해 Learning Rate를 0.003에서서 0.0005 수준으로 낮춰 안정성을 확보하고, 규제 계수를 완화하여 로그 연산의 영향력을 줄여 개선하였습니다. 마지막으로 데이터 셋에서 최다수를 차지하는 미분류 거래의 영향력으로 NaN값 전파되는 현상을 방지하기 위해 NaN 발생 시 해당 배치는 무시하여 Loop 내에서 total_loss가 오염되지 않도록 학습했습니다.
 
 
 ### 2. Neo4j Knowledge Graph Construction & Evidence Retrieval Pipeline
