@@ -54,11 +54,13 @@ Blocklist : 온체인 기반 스테이블 코인 거래 AML 서비스
 
 [Elliptic Dataset](https://www.kaggle.com/datasets/ellipticco/elliptic-data-set)
 
-<img width="1600" height="1067" alt="Code_Generated_Image" src="https://github.com/user-attachments/assets/e3d85678-acdc-4aa5-b645-9f05abaceab5" />
+<img width="700" height="600" alt="Code_Generated_Image" src="https://github.com/user-attachments/assets/e3d85678-acdc-4aa5-b645-9f05abaceab5" />
 
 Elliptic 데이터셋은 비트코인 거래 데이터를 포함하고 `elliptic_txs_features.csv`, `elliptic_txs_classes.csv`, `elliptic_txs_edgelist.csv` 3개의 파일로 구성되어 있습니다. 노드와 엣지 기반으로 분류되어 있어 Neo4j 지식그래프 구축에 적합한 형태입니다.
 
 ① 거래 관계도 (elliptic_txs_edgelist.csv) 
+- 행: 203,769개 트랜잭션 (노드) 열: 167개
+- 행: 203,769개 열: 2개
 - 거래 관계 즉, 자금 이동 경로를 나타내는 데이터
 -  A지갑에서 B지갑으로 코인이 이동했다면, 이는 '거래(Transaction)'라는 노드 간의 연결로 표현됨
 
@@ -67,6 +69,7 @@ Elliptic 데이터셋은 비트코인 거래 데이터를 포함하고 `elliptic
  | 230425980 | 5530458 | 
 
 ② 거래 속성 정보 (elliptic_txs_features.csv) 
+- 행: 203,769개 트랜잭션 (노드) 열: 167개
 - 각 거래(노드)가 가지는 166차원의 고유한 특징 벡터
 - 해당 데이터셋에서는 features의 특징이 익명화되어 있음
 
@@ -79,6 +82,7 @@ Elliptic 데이터셋은 비트코인 거래 데이터를 포함하고 `elliptic
 - (예: 이웃 거래들의 평균 거래량, 이웃의 이웃이 가진 표준편차 등)
 ```
 ③ 정답 레이블 (elliptic_txs_classes.csv) 
+- 행: 234,355개 엣지 열: 2개
 - 거래 정상(0)/비정상(1)/미분류(-1)를 나타내는 데이터, 불균형 데이터의 특징
 - 데이터 분포
   - 불법 (illicit) - 약 4,545개 (2%)
