@@ -140,10 +140,12 @@ GNN 모델&PGExplainer를 통해 특정 거래패턴의 비정상적인 움직�
 
 ### 4. Railway API
 
-최종적으로 API 파이프라인 구성 및 실행하였습니다.    
 [배포 환경]
 - Dockerfile을 사용한 컨테이너 기반 환경에서 빌드 및 실행
 - FastAPI 기반 백엔드 서버 코드 구성
+- Railway에 백엔드 서버 배포 및 엔드포인트 
+
+최종적으로 API 파이프라인 구성 및 실행하였습니다.    
 1. 데이터 준비 단계에서 download_files_only.py 스크립트가 실행 단계에서 `gdown`을 활용하여 800MB에 달하는 대용량 데이터 및 모델 파일을 Google Drive에서 다운로드합니다. 이 과정은 빌드 시간 초과(10분)를 회피하기 위해 Procfile (혹은 start.sh)에 의해 서버 실행 명령 이전에 분리되어 실행됩니다. 다음으로 모델 로딩 단계에서 다운로드된 파일들은 api_server.py가 시작될 때 CPU 버전의 PyTorch를 사용하여 메모리에 로드됩니다.
 2. FastAPI 프레임워크를 기반으로 서버가 구축되어 높은 성능의 비동기 처리를 지원합니다 `/v1/check_wallet` 엔드포인트가 정의되어 있으며, 이는 지갑 주소 또는 트랜잭션 $\text{ID}$ 목록을 받아 분석을 요청합니다.
 3. Pydantic 모델인 WalletRequest를 사용하여 요청 본문(txIds: list[str])의 데이터 유효성 검사를 자동으로 수행합니다.
